@@ -9,7 +9,7 @@ library(stringr)
 ################################################
 # Getting the Text
 
-fedtext <- scan("~/Desktop/Fedpapers.txt", what="character", sep="\n")
+fedtext <- scan("./Fedpapers.txt", what="character", sep="\n")
 
 #("http://www.gutenberg.org/dirs/etext91/feder16.txt")
 
@@ -79,7 +79,7 @@ fedpap.auth <- lapply(chap.contents.l, str_extract, pattern=auth.patt)
 # remove most punctuation 
 
 # cbind the text, authors, and titles into a data frame
-fedpap.data <- cbind(chap.contents.l,fedpap.names.l,fedpap.authors.l)
+fedpap.data <- cbind(chap.contents.l,fedpap.names.l,fedpap.auth)
 fedpap.data <- as.data.frame(fedpap.data)
 
 ##################################################
