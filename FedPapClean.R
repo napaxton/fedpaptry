@@ -32,8 +32,10 @@ chap.positions.v  <-  c(chap.positions.v , last.position.v)
 chap.contents.l <-list()
 
 pattern <- "FEDERALIST[. ]+No\\.\\s[0-9]{1,2}"
+title.pattern <- "FEDERALIST[. ]+No\\.\\s[0-9]{1,2}(.*)(?=(HAMILTON|JAY|MADISON))"
+
 # longpattern <- "FEDERALIST[. ]+No\\.\\s[0-9]{1,2}.*?(FEDERALIST[. ]+No\\.\\s[0-9]{1,2})|(End\\ of\\ the\\ Project\\ Gutenberg\\ Etext\\ of\\ the\\ Federalist\\ Papers)"
-# chap.contents.l <- str_split(fullfed.char,pattern=pattern)
+
 chap.contents.l <- list(length(chap.positions.v))
 for (i in 1:length(chap.positions.v)){
     if (i != length(chap.positions.v)){
@@ -52,8 +54,8 @@ for (i in 1:length(chap.contents.l)){
         cat(chap.contents.l[[i]], file=paste0("fedpap", "70b", ".txt") )
     else cat(chap.contents.l[[i]], file=paste0("fedpap", i-1, ".txt") )
 }
-#####
 
+#####
 # convert \r and \n to " " ### for the separate papers, this was done in the for loop above
 # fullfed.char <- str_c(fullfed.lines, collapse=" ") # version with the full text as one long char vector
 
@@ -66,20 +68,26 @@ for (i in 1:length(chap.contents.l)){
     fedpap.names.l[i] <- str_extract(pattern=pattern,chap.contents.l[[i]])
 }
 
+# make list of "long" titles of papers
+fedpap.longtitle.l <- list()
+for (i in 1:length(chap.contents.l)){
+    fedpap.longtitle.l[i] <- str_extract(pattern=title.pattern,chap.contents.l[[i]])
+}
+
 # make list of authors
 fedpap.authors.l <- list()
 auth.patt <- "(HAMILTON|JAY|MADISON)(\\s(AND|OR)\\s(MADISON))?"
 fedpap.auth <- lapply(chap.contents.l, str_extract, pattern=auth.patt)
 
-# keep just the text of the essays
-
 # lowercase everything
-## fullfed.ch.low <- tolower(fullfed.char) # lower-casing
+# fullfed.ch.low <- tolower(fullfed.char) # lower-casing
+chap.contents.lower.l <- lapply(chap.contents.l, tolower)
 
 # remove most punctuation 
 
+
 # cbind the text, authors, and titles into a data frame
-fedpap.data <- cbind(chap.contents.l,fedpap.names.l,fedpap.auth)
+fedpap.data <- cbind(chap.contents.lower.l,fedpap.names.l,fedpap.auth)
 fedpap.data <- as.data.frame(fedpap.data)
 
 ##################################################
@@ -92,7 +100,7 @@ fedpap.data <- as.data.frame(fedpap.data)
 ##
 
 ### tokens for FedPapListNoPunct will be words
-FedPapListNoPunctTokens = [essay.split() for essay in FedPapListNoPunct]
+#FedPapListNoPunctTokens = [essay.split() for essay in FedPapListNoPunct]
 ##
 ### drop stop words from FedPapListNoPunct
 
