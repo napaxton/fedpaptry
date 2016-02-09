@@ -44,5 +44,7 @@ for(i in 1:length(chap.positions.v)){
 }
 
 ## Making corpora with package "tm"
-fedpap.corp <- 
-    fedpap.corp <- VCorpus(DirSource(directory = "./data"))
+library(tm)
+fedpap.corp <- VCorpus(DirSource(directory = "./data"))
+for (i in 1:length(fedpap.auth)) {
+    fedpap.auth[[i]] -> meta(fedpap.corp[[i]], "author", type="indexed")
