@@ -48,3 +48,4 @@ library(tm)
 fedpap.corp <- VCorpus(DirSource(directory = "./data"))
 for (i in 1:length(fedpap.auth)) {
     fedpap.auth[[i]] -> meta(fedpap.corp[[i]], "author", type="indexed")
+}
