@@ -58,3 +58,4 @@ for (i in 1:length(fedpap.auth)) {
 }
 
 fedpap.dtm <- TermDocumentMatrix(fedpap.corp)
+
