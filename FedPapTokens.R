@@ -45,7 +45,16 @@ for(i in 1:length(chap.positions.v)){
 
 ## Making corpora with package "tm"
 library(tm)
+
 fedpap.corp <- VCorpus(DirSource(directory = "./data"))
+
+fedpap.corp <- tm_map(fedpap.corp, stripWhitespace)
+fedpap.corp <- tm_map(fedpap.corp, content_transformer(tolower))
+fedpap.corp <- tm_map(fedpap.corp, removeWords, stopwords("english"))
+fedpap.corp <- tm_map(fedpap.corp, stemDocument)
+
 for (i in 1:length(fedpap.auth)) {
     fedpap.auth[[i]] -> meta(fedpap.corp[[i]], "author", type="indexed")
 }
+
+fedpap.dtm <- TermDocumentMatrix(fedpap.corp)
