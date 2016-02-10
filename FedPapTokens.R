@@ -45,17 +45,28 @@ for(i in 1:length(chap.positions.v)){
 
 ## Making corpora with package "tm"
 library(tm)
+library(proxy)
 
-fedpap.corp <- VCorpus(DirSource(directory = "./data"))
+# fedpap.vcorp <- VCorpus(DirSource(directory = "./data"))
+fedpap.corp <- Corpus(DirSource(directory = "./data"))
+
+
+for (i in 1:length(fedpap.auth)) {
+    fedpap.auth[[i]] -> meta(fedpap.corp[[i]], "author", type="indexed")
+}
 
 fedpap.corp <- tm_map(fedpap.corp, stripWhitespace)
 fedpap.corp <- tm_map(fedpap.corp, content_transformer(tolower))
 fedpap.corp <- tm_map(fedpap.corp, removeWords, stopwords("english"))
 fedpap.corp <- tm_map(fedpap.corp, stemDocument)
 
-for (i in 1:length(fedpap.auth)) {
-    fedpap.auth[[i]] -> meta(fedpap.corp[[i]], "author", type="indexed")
-}
 
-fedpap.dtm <- TermDocumentMatrix(fedpap.corp)
+fedpap.tdm <- TermDocumentMatrix(fedpap.corp)
+fed.dtm <- DocumentTermMatrix(fedpap.corp)
 
+
+fed.dtm.m <- as.matrix(fed.dtm)
+rownames(fed.dtm.m) <- paste(rownames(fed.dtm.m),fedpap.auth))
+feddissim <- dist(fed.dtm.m)
+fed.hclust <- hclust(feddissim)
+fed.wardhclust <- hclust(feddissim, method="ward.D")
