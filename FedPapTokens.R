@@ -10,7 +10,7 @@ fed.freqs.t <- table(fed.words.v)
 sort.fed.freqs.t <- sort(fed.freqs.t, decreasing=T)
 sort.fed.freqs.rel.t <- 100*(sort.fed.freqs.t/sum(sort.fed.freqs.t))
 plot(sort.fed.freqs.rel.t[1:15], type="b",
-     xlab="Top Fifteeen Words", ylab="Percentage of Full text", xaxt="n")
+     xlab="Top Fifteen Words", ylab="Percentage of Full text", xaxt="n")
 axis(1, 1:15, labels=names(sort.fed.freqs.rel.t [1:15]))
 
 ## Dispersions
@@ -64,9 +64,17 @@ fedpap.corp <- tm_map(fedpap.corp, stemDocument)
 fedpap.tdm <- TermDocumentMatrix(fedpap.corp)
 fed.dtm <- DocumentTermMatrix(fedpap.corp)
 
+# derived from https://eight2late.wordpress.com/2015/07/22/a-gentle-introduction-to-cluster-analysis-using-r/
 
 fed.dtm.m <- as.matrix(fed.dtm)
-rownames(fed.dtm.m) <- paste(rownames(fed.dtm.m),fedpap.auth))
+rownames(fed.dtm.m) <- paste(rownames(fed.dtm.m),fedpap.auth)
 feddissim <- dist(fed.dtm.m)
 fed.hclust <- hclust(feddissim)
+# feddissim.m <- as.matrix(feddissim)
 fed.wardhclust <- hclust(feddissim, method="ward.D")
+
+# kmeans(fedpap.tdm, k=2) -> fedpap.2kmeans
+# kmeans(fedpap.tdm, k=5) -> fedpap.5kmeans
+library(cluster)   
+(fed.kfit <- kmeans(feddissim.m, 2))
+plot(fed.dtm.m,fed.kfit$cluster, color=T)
